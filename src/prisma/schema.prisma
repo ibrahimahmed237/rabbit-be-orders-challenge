@@ -10,10 +10,14 @@ generator client {
 model Product {
   id        Int      @id @default(autoincrement())
   name      String
-  category  String
-  area String
+  category  String   @db.VarChar(255)
+  area      String   @db.VarChar(255)
+  
   orders    OrderItem[]
   createdAt DateTime @default(now())
+
+  @@index([area])
+  @@index([category])
 }
 
 model Order {
@@ -30,4 +34,7 @@ model OrderItem {
   productId Int
   order     Order    @relation(fields: [orderId], references: [id])
   orderId   Int
+
+  @@index([productId])
+  @@index([orderId])
 }

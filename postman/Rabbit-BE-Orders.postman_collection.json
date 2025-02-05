@@ -1,0 +1,161 @@
+{
+	"info": {
+		"_postman_id": "3050b68b-1d15-4ae5-9089-e59516a7fdee",
+		"name": "Rabbit BE Orders",
+		"description": "Collection for testing Rabbit BE Orders API endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24291675"
+	},
+	"item": [
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/product?page=1&limit=10&categories[]=Electronics&categories[]=Fashion",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"product"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number for pagination"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Number of items per page"
+								},
+								{
+									"key": "categories[]",
+									"value": "Electronics",
+									"description": "Filter by category"
+								},
+								{
+									"key": "categories[]",
+									"value": "Fashion",
+									"description": "Filter by category"
+								}
+							]
+						},
+						"description": "Get all products with optional filtering and pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/product/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"product",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "2"
+								}
+							]
+						},
+						"description": "Get a single product by its ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Top Products by Area",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/product/top/:area",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"product",
+								"top",
+								":area"
+							],
+							"variable": [
+								{
+									"key": "area",
+									"value": "Maadi"
+								}
+							]
+						},
+						"description": "Get top 10 products by area, sorted by order count"
+					},
+					"response": []
+				}
+			],
+			"description": "Product-related endpoints"
+		},
+		{
+			"name": "Create Order",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"customerId\":3,\r\n    \"items\":[\r\n        {\r\n            \"productId\":7445,\r\n            \"quantity\":2\r\n        },\r\n        {\r\n            \"productId\":3,\r\n            \"quantity\":4\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/order",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"order"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

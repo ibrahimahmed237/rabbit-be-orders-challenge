@@ -1,32 +1,67 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { ProductRepository } from './product.repository';
-import { CreateProductDto } from './dto/create-product.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { GetAllProductsDTO } from './dto/get-all-products.dto';
-import { ProductDTO } from './dto/product.dto';
+import { TopProductsResponseDTO } from './dto/top-products.dto';
+import { Inject } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class ProductService {
   constructor(
-    private readonly productsRepository: ProductRepository,
-    private prismaService: PrismaService,
+    private readonly productRepository: ProductRepository,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
-  async getAllProducts(filters: GetAllProductsDTO): Promise<ProductDTO[]> {
-    if (filters.categories && filters.categories.length) {
-      const products = [];
-      for (let i = 0; i < filters.categories.length; i++) {
-        products.push(
-          await this.prismaService.product.findFirst({
-            where: { category: filters.categories[i] },
-          }),
-        );
-      }
+  async getAllProducts(filters: GetAllProductsDTO) {
+    const cacheKey = `products:${JSON.stringify(filters)}`;
+    const cachedProducts = await this.cacheManager.get(cacheKey);
+    
+    if (cachedProducts) {
+      return cachedProducts;
     }
-    return this.prismaService.product.findMany();
+
+    const products = await this.productRepository.findAll(filters);
+    await this.cacheManager.set(cacheKey, products);
+    
+    return products;
   }
 
-  async getProductById(id: number): Promise<ProductDTO> {
-    return this.productsRepository.findById(id);
+  async getProductById(id: number) {
+    const cacheKey = `product:${id}`;
+    const cachedProduct = await this.cacheManager.get(cacheKey);
+    
+    if (cachedProduct) {
+      return cachedProduct;
+    }
+    if (isNaN(id)) {
+      throw new BadRequestException('Invalid product ID');
+    }
+        
+    const product = await this.productRepository.findById(id);
+    if (!product) {
+      throw new NotFoundException(`Product with ID ${id} not found`);
+    }
+
+    await this.cacheManager.set(cacheKey, product);
+    return product;
+  }
+
+  async getTopProducts(area: string): Promise<TopProductsResponseDTO[]> {
+    if (!area || typeof area !== 'string') {
+      throw new BadRequestException('Invalid area');
+    }
+
+    const cacheKey = `top-products:${area}`;
+    const cachedTopProducts = await this.cacheManager.get<TopProductsResponseDTO[]>(cacheKey);
+    
+    if (cachedTopProducts) {
+      return cachedTopProducts;
+    }
+
+    const topProducts = await this.productRepository.findTopProducts(area);
+    await this.cacheManager.set(cacheKey, topProducts, 300000); // Cache for 5 minutes
+    
+    return topProducts;
   }
 }

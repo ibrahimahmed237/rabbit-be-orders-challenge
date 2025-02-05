@@ -6,7 +6,9 @@ CREATE TABLE `Product` (
     `area` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    INDEX `idx_product_area` (`area`),
+    INDEX `idx_product_category` (`category`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
@@ -25,7 +27,9 @@ CREATE TABLE `OrderItem` (
     `productId` INTEGER NOT NULL,
     `orderId` INTEGER NOT NULL,
 
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    INDEX `idx_orderItem_productId` (`productId`),
+    INDEX `idx_orderItem_orderId` (`orderId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
