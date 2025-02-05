@@ -18,6 +18,7 @@ model Product {
 
   @@index([area])
   @@index([category])
+  @@index([area, category])
 }
 
 model Order {
