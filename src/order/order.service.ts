@@ -6,13 +6,14 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { ProductService } from '../product/product.service';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class OrderService {
   constructor(
     private readonly orderRepository: OrderRepository,
     private readonly productService: ProductService,
-
+    private readonly notificationService: NotificationService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
@@ -47,6 +48,9 @@ export class OrderService {
       }),
     );
     const order = await this.orderRepository.create(orderData);
+
+    // Send notification for new order
+    await this.notificationService.sendOrderNotification(order.id, order.customerId);
 
     // Invalidate relevant caches
     await this.invalidateProductCaches(orderData);

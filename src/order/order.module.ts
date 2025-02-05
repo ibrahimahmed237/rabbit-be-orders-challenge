@@ -6,9 +6,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { ProductModule } from '../product/product.module';
 import { ProductService } from '../product/product.service';
 import { ProductRepository } from '../product/product.repository';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
-  imports: [ProductModule],
+  imports: [ProductModule, NotificationModule],
   controllers: [OrderController],
   providers: [
     PrismaService,

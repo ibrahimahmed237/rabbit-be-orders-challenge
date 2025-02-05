@@ -2,7 +2,15 @@
 
 ## Overview
 
-This is a NestJS-based backend service that manages products and orders with a focus on high performance and scalability. The application implements caching strategies and follows best practices for enterprise-level applications.
+This is a NestJS-based backend service that manages products and orders with a focus on high performance and scalability. The application implements advanced caching strategies, real-time notifications via Pushover, and follows best practices for enterprise-level applications. Key features include:
+
+- Product and order management with MySQL database
+- Application-level caching with optimized strategies
+- Real-time order notifications through Pushover integration
+- Comprehensive API testing suite with Postman collections
+- Unit and E2E test coverage
+- Environment-based configuration
+- Performance optimizations for high-scale operations
 
 ## Assumptions Made
 
@@ -22,6 +30,8 @@ This is a NestJS-based backend service that manages products and orders with a f
    - A product belongs to only one area
    - Order history is retained indefinitely
    - All products are equally weighted in the calculation
+   - Order notifications should be sent in real-time to administrators
+   - Failed notifications should not block order processing
 
 ## Architecture
 
@@ -152,12 +162,67 @@ The application includes comprehensive unit tests focusing on core functionality
 - Node.js (v20 or higher)
 - MySQL database
 - Yarn package manager
+- Pushover account and device (for notifications)
 
 ### Environment Setup
+
 Create a `.env` file in the root directory with the following variables:
+
 ```env
+
+# Database Configuration
+
 DATABASE_URL=mysql://user:password@localhost:3306/dbname
+
+
+# Pushover Notification Configuration
+
+PUSHOVER_TOKEN=your_app_token_here    # Your Pushover application token
+
+PUSHOVER_USER=your_user_key_here      # Your Pushover user key
+
 ```
+
+
+### Notification System
+
+The application uses Pushover for real-time order notifications:
+
+
+
+1. **Features**
+
+   - Real-time notifications for new orders
+
+   - Configurable notification sound
+
+   - Priority-based delivery
+
+   - Retry mechanism for offline devices
+
+   - 3-hour expiration for undelivered messages
+
+
+
+2. **Setup Requirements**
+
+   - Pushover account (sign up at https://pushover.net)
+
+   - Active Pushover device (mobile app or desktop client)
+
+   - Valid application token and user key in `.env`
+
+
+
+3. **Error Handling**
+
+   - Failed notifications are logged but don't affect order processing
+
+   - Detailed error logging for debugging
+
+   - Automatic retry for offline devices
+
+
 
 ### Installation and Setup
 ```bash

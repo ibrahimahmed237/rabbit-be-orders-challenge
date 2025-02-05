@@ -12,12 +12,15 @@ async function main() {
 
   const areas = ['Maadi', 'Zayed', 'New Cairo', 'Giza'];
 
+  const categories = ['Electronics', 'Clothing', 'Books', 'Home', 'Toys', 'Sports', 'Beauty'];
+
   for (let i = 0; i < productsCount; i++) {
     const randomArea = areas[Math.floor(Math.random() * areas.length)];
+    const randomCategory = categories[Math.floor(Math.random() * categories.length)];
 
     products.push({
       name: `Product ${i + 1}`,
-      category: `Product ${i + 1} Category`,
+      category: randomCategory,
       area: randomArea,
     });
   }
